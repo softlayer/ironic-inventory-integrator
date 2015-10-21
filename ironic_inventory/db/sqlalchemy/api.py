@@ -34,6 +34,7 @@ def get_session(**kwargs):
     facade = _create_facade_lazily()
     return facade.get_session(**kwargs)
 
+
 def _get_servers_query(kwargs):
     session = get_session()
     filters = copy.copy(kwargs)
@@ -117,7 +118,6 @@ def remove_server(uuid):
         query.delete()
 
 
-
 def get_all_servers():
     """Get all servers as a list.
     """
@@ -178,6 +178,7 @@ def get_single_server_match(**kwargs):
         return None
 
     return server
+
 
 def get_server_by_uuid(server_id):
     """Get a server by it's uuid
@@ -245,9 +246,6 @@ def reserve_server(server_instance):
     server_instance.save()
 
     return server_instance
-
-
-
 
 
 def cancel_reservation(server_uuid):
