@@ -8,7 +8,9 @@ from sqlalchemy import Column, Integer, String, Boolean, schema
 from sqlalchemy import ForeignKey, orm
 
 from ironic_inventory.db.sqlalchemy.base import DeclarativeBaseImpl
+from ironic_inventory.common import paths
 
+_DEFAULT_SQL_CONNECTION = 'sqlite:///' + paths.state_path_def('inventory.sqlite')
 
 class Server(DeclarativeBaseImpl):
     """Represents a Bare Metal Server."""
@@ -48,7 +50,7 @@ class Server(DeclarativeBaseImpl):
     # Reservation Data
     reservation_id = Column(Integer, ForeignKey('reservations.id'))
     reservation = orm.relationship('Reservation', uselist=False,
-                                   cacade='all, delete-orphan',
+                                   cascade='all, delete-orphan',
                                    single_parent=True)
     # Deployed Flag
     # Note(caustin): This may be better normalized.

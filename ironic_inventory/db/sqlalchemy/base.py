@@ -3,6 +3,7 @@
 """Base definitions for SQLAlchemy and db specific configurations."""
 
 from oslo_config import cfg
+from oslo_db import options as db_options
 from oslo_db.sqlalchemy import models as oslo_models
 from sqlalchemy.ext.declarative import declarative_base
 from ironic_inventory.common import paths
@@ -13,8 +14,8 @@ sql_opts = [
                help='MySQL engine to use.')
 ]
 
-_DEFAULT_SQL_CONNECTION = 'sqlite:///{0:s}'.format(
-    paths.state_path_def('inventory.sqlite'))
+_DEFAULT_SQL_CONNECTION = 'sqlite:///' + paths.state_path_def('inventory.sqlite')
+db_options.set_defaults(cfg.CONF, _DEFAULT_SQL_CONNECTION, 'ironic.sqlite')
 
 
 class InventoryBase(oslo_models.TimestampMixin, oslo_models.ModelBase):

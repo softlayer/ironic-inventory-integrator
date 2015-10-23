@@ -4,13 +4,14 @@
 """
 import copy
 from oslo_config import cfg
-from oslo_db.sqlalchemy import session as db_session
 from oslo_db import exception as db_exc
+from oslo_db.sqlalchemy import session as db_session
 from oslo_log import log
 from sqlalchemy.orm import exc as sqla_exc
 
 from ironic_inventory.common import exceptions
 from ironic_inventory.db.sqlalchemy import models
+
 
 
 CONF = cfg.CONF
@@ -33,6 +34,12 @@ def get_engine():
 def get_session(**kwargs):
     facade = _create_facade_lazily()
     return facade.get_session(**kwargs)
+
+def get_backend():
+    """
+
+    :return:
+    """
 
 
 def _get_servers_query(kwargs):
