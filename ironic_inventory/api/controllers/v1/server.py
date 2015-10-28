@@ -3,16 +3,9 @@
 from pecan import rest
 from wsme import types as wtypes
 
+from ironic_inventory.api.controllers.base import ApiBase, wsme_expose
 from ironic_inventory.api.controllers.root import wsme_expose
 from ironic_inventory.db.sqlalchemy.api import Connection
-
-
-class ApiBase(wtypes.Base):
-    """A Base Object for handling serialization of objects from request
-    """
-
-    def as_dict(self):
-        return {key: getattr(self, key) for key in self.fields}
 
 
 class Server(ApiBase):

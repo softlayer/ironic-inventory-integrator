@@ -4,19 +4,10 @@
 Root controller for web api.
 """
 
-
 from pecan import rest
 from wsme import types as wtpes
-import wsmeext.pecan as wsme_pecan
 
-
-def wsme_expose(*args, **kwargs):
-    """Coerce the content type to json"""
-
-    if 'rest_content_types' not in kwargs:
-        kwargs['rest_content_types'] = ('json', )
-    return wsme_pecan.wsexpose(*args, **kwargs)
-
+from ironic_inventory.api.controllers.base import wsme_expose
 
 
 class Version(object):
