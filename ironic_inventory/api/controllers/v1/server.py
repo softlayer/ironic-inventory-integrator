@@ -1,14 +1,20 @@
 # -*- encoding: utf-8 -*-
 
+
+import pecan
 from pecan import rest
 from wsme import types as wtypes
 
-from ironic_inventory.api.controllers.base import ApiBase, wsme_expose
+from ironic_inventory.api.controllers.base import ApiBase
 from ironic_inventory.api.controllers.root import wsme_expose
-from ironic_inventory.db.sqlalchemy.api import Connection
+from ironic_inventory.db import api as dbapi
+from ironic_inventory.objects.server import ServerFields
 
 
 class Server(ApiBase):
+    """API Representation of a Server.
+
+    """
 
     id = wtypes.StringType
     uuid = wtypes.StringType
@@ -25,6 +31,15 @@ class Server(ApiBase):
     ipmi_mac_address = wtypes.StringType
     reservation_id = wtypes.StringType
     deployed = wtypes.BinaryType
+
+    def __init__(self, **kwargs):
+        self.fields = []
+        for field in ServerFields:
+            if not hasattr(self, field):
+                continue
+            self.fields.append(field)
+            setattr(self, field, kwargs.get(field, wtypes.Unset))
+
 
     @classmethod
     def from_dict(cls, **kwargs):
@@ -69,7 +84,7 @@ class ServerCollection(ApiBase):
 
 class ServerController(rest.RestController):
 
-    connection = Connection()
+    dbapi = dbapi.get_instance()
 
     @wsme_expose(Server, wtypes.StringType)
     def get_one(self, server_uuid):
@@ -79,16 +94,24 @@ class ServerController(rest.RestController):
         """
 
         server = Server.from_dict(
-            self.connection.get_server_by_uuid(server_uuid).as_dict())
+            self.dbapi.get_server_by_uuid(server_uuid).as_dict())
         return server
 
     @wsme_expose(ServerCollection, wtypes.StringType, int, wtypes.text, wtypes.text)
     def get_all(self):
 
-        servers = self.connection.get_all_servers()
+        servers = self.dbapi.get_all_servers()
         return ServerCollection.from_list_of_dicts(servers)
 
     @wsme_expose(Server, body=Server, status_code=201)
     def post(self, server):
+        """Create a new server.
 
-        pass
+        :param server: A server supplied via the request body.
+        """
+
+        db_server = self.dbapi.add_server(pecan.request.contex, **server.as_dict())
+        return Server.from_dict(db_server.as_dict())
+
+
+

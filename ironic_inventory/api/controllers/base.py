@@ -9,7 +9,7 @@ class ApiBase(wtypes.Base):
     """
 
     def as_dict(self):
-        return {key: getattr(self, key) for key in self.fields}
+        return {field: getattr(self, field) for field in self.fields}
 
 
 def wsme_expose(*args, **kwargs):
