@@ -56,6 +56,7 @@ class Server(DeclarativeBaseImpl):
     # Note(caustin): This may be better normalized.
     deployed = Column(Boolean(), default=False)
 
+
 class Reservation(DeclarativeBaseImpl):
     """Represents a reservation request for a server"""
 
